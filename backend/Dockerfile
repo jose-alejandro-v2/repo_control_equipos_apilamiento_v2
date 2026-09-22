@@ -1,15 +1,16 @@
-FROM maven:3.9-eclipse-temurin-21 AS build
-WORKDIR /app
+FROM maven:3.9-eclipse-temurin-17 AS build
+WORKDIR /build
 COPY pom.xml .
-RUN mvn dependency:go-offline -B
+RUN mvn -B -q dependency:go-offline
 COPY src ./src
-RUN mvn package -DskipTests -Dquarkus.package.jar.type=uber-jar
+RUN mvn -B package -DskipTests
 
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:17-jre
+ENV TZ=America/Lima
 WORKDIR /app
 RUN addgroup -S apilamiento && adduser -S apilamiento -G apilamiento
-COPY --from=build /app/target/*-runner.jar app.jar
+COPY --from=build /build/target/quarkus-app/ ./quarkus-app/
 RUN chown -R apilamiento:apilamiento /app
 USER apilamiento
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Duser.timezone=America/Lima", "-jar", "quarkus-app/quarkus-run.jar"]
