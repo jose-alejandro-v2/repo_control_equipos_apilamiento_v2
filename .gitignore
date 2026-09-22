@@ -30,6 +30,7 @@ Thumbs.db
 .env
 .env.local
 *.log
+app.env
 
 # Android signing
 *.jks

@@ -1,0 +1,172 @@
+esta es la transcripcion de un video de como nos enseña a configurar la coenxion de los apps, para que tenga salida a internet, vlidalo y entiendelo para que me sirvas de guia:
+<br>
+<br>
+<br>
+Transcripción. Usa las teclas de dirección para desplazarte entre las entradas de transcripción. Selecciona una entrada para navegar por los medios hasta la hora de la entrada.
+
+
+
+El contenido generado por IA puede ser incorrecto
+
+Xiomara Unzueta
+ inició la transcripción
+MH
+Marcelino Heredia
+0 minutos 6 segundos0:06
+Marcelino Heredia 0 minutos 6 segundos
+No, no, no.
+Marcelino Heredia 0 minutos 8 segundos
+Actualmente ustedes están trabajando en el punto 24, es donde se encuentra, digamos, la.
+Marcelino Heredia 0 minutos 17 segundos
+El servidor de QA es de QA nuevo stack. Dentro del nuevo stack ustedes tiene que crear un punto un punto claro.
+Marcelino Heredia 0 minutos 30 segundos
+No para que puedan implementar, o sea, tienen 22 puntos, uno que es el la parte QA, que es el punto JAR.
+Marcelino Heredia 0 minutos 41 segundos
+Y el otro que es en la web, ya lo que les voy a mostrar aquí es cómo publicar.
+Marcelino Heredia 0 minutos 52 segundos
+Esas aplicaciones dentro del servidor que.
+Marcelino Heredia 0 minutos 58 segundos
+Tenía 10 volver a hacer esto.
+Marcelino Heredia 1 minuto 3 segundos
+What?
+Marcelino Heredia 1 minuto 12 segundos
+I.
+Marcelino Heredia 1 minuto 18 segundos
+Mm.
+Marcelino Heredia 11 minutos 12 segundos
+Pero esto ya bueno, esto ya lo cambiaría un poco porque vamos a implementarlo en si es que tenemos espacio últimamente en contenedor.
+Marcelino Heredia 11 minutos 21 segundos
+Así cambiaría un poquito.
+Marcelino Heredia 11 minutos 23 segundos
+Ya.
+Marcelino Heredia 11 minutos 26 segundos
+ya Entonces esto nos vemos aquí cuando lo que vamos a hacer es abrir el puerto no en este caso yo he utilizado este Puerto 8105 en este caso por el caso de Oracle se abre con esto en el caso de Ubuntu se abre con esto
+Marcelino Heredia 11 minutos 45 segundos
+con este comando una vez que esté abierto este Puerto vamos a poder consultar desde otro servidor desde nuestra máquina desde otros servidores vamos a poder consultar con este Puerto nosotros por ejemplo lo que vamos a hacer es conectar este servicio dentro del servidor
+Marcelino Heredia 12 minutos 5 segundos
+172.18.10 donde vamos a salir, ¿no?
+Marcelino Heredia 12 minutos 10 segundos
+bueno este es como un servicio API que digamos que es ejecutado aquí entonces lo que voy a hacer es probar si es que el servicio o el puerto está habilitado en el 162.18.10.10 entonces lo que hago es hago un telnet
+Marcelino Heredia 12 minutos 30 segundos
+de 10.13.10. Bueno del servidor de origen básicamente en este caso yo punto 24 que van a desplegar ustedes y el puerto de su servicio de ustedes no pueden haber implementado el puerto 9000 Puerto 3000 dependiendo del servicio que usted está implementando deberían tener una conexión
+Marcelino Heredia 12 minutos 50 segundos
+estable si es que no existe una conexión hay que coordinar bueno hay que habría que coordinar con Jhonny para que abrir en el puerto habilita en el puerto para que se conecte desde el punto 10 al servidor este
+Marcelino Heredia 13 minutos 11 segundos
+.24 que vendría a ser el origen. Podrían mandar este pantallazo de repente en caso de que no haya conexión para que les entiendo desde qué servidor a qué servidor necesita que se conecte, ¿no?
+Marcelino Heredia 13 minutos 26 segundos
+Una vez que tengamos conexión.
+Marcelino Heredia 22 minutos 17 segundos
+porque el móvil como van a instalar en el móvil debería estar siempre necesita conectarse entonces en algún lugar se tiene que conectar Entonces es necesario que esté aquí ahora para que ustedes Ese es el caso del de la ahora en caso de la web
+Marcelino Heredia 22 minutos 38 segundos
+En el caso de la web está aquí cuando ingresen, digamos, a su a su.
+Marcelino Heredia 22 minutos 46 segundos
+acá también deberían tener su invitado su web, en este caso por ejemplo es mi web dentro de mi web hay una carpeta que se llama this y esto digamos desde React en el caso de React se ejecuta esto y esto es lo único que se necesita para publicar
+Marcelino Heredia 23 minutos 5 segundos
+para publicar la web. Entonces esto yo he creado un post como este
+Marcelino Heredia 23 minutos 16 segundos
+No me acuerdo, si me instalé con el punto 24, pero igual me confirma. El paso, si quieren publicar, digamos, como ya lo publicaron, ya lo distribuyeron, lo que pueden hacer es
+Marcelino Heredia 23 minutos 35 segundos
+Bien, muy bien. Era un Ford, ¿no? Que básicamente es el Ford de...
+Marcelino Heredia 23 minutos 45 segundos
+No, no.
+Marcelino Heredia 23 minutos 48 segundos
+Pues.
+Marcelino Heredia 23 minutos 51 segundos
+Acá yo creo y haciendo un puerto, pues nuestro puerto está trabajando en el puerto 88.
+Marcelino Heredia 23 minutos 58 segundos
+Entonces si te das cuenta estoy apuntando a esta ruta que es un archivo básicamente, eso es un archivo estático, el archivo el punto el react te genera cuando haces npm roombuild te genera un archivo estático, y este archivo estático se
+Marcelino Heredia 24 minutos 18 segundos
+cuando levantan esto aquí se va a levantar el puerto 88 y este y digamos que esta es la configuración Bueno en configuración se puede decir estándar
+Marcelino Heredia 24 minutos 33 segundos
+Para que puedan cargar un archivo y un host, una web.
+Marcelino Heredia 24 minutos 39 segundos
+Ahora, si esto, si esta web necesitan publicarlo aquí ya por afuera de forma exterior.
+Marcelino Heredia 24 minutos 47 segundos
+Igual lo mismo, no abren este puerto, que es el puerto 88, abren el puerto 88.
+Marcelino Heredia 24 minutos 54 segundos
+Luego entra acá el ciento superior punto 1010 cuando ya tengan habilitado el puerto.
+Marcelino Heredia 25 minutos 4 segundos
+¿Crea así en la configuración, o sea, en la parte de la configuración crean otro más donde dicen no sé, pues prueba, prueba apps, por ejemplo, no?
+Marcelino Heredia 25 minutos 14 segundos
+y aquí apuntan al punto 24 y al puerto que ustedes se han colocado que es de la web no 88 entonces ahí ahí tienen ahí tienen dos ahí tienen pueden tener varios varios servicios extendiendo lo que ustedes publiquen
+Marcelino Heredia 25 minutos 33 segundos
+Eso más que todo. ¿Tienen alguna consulta ahí?
+Marcelino Heredia 25 minutos 41 segundos
+Okay.
+Marcelino Heredia 25 minutos 44 segundos
+Movin Singer.
+Marcelino Heredia 25 minutos 47 segundos
+la publicación de móvil celular aquí este es el servicio que tienen que colocar lo primero como digo ejecutan
+Marcelino Heredia 25 minutos 59 segundos
+Están en el, digamos, en el servidor punto 24, ya crean el servicio.
+Marcelino Heredia 26 minutos 6 segundos
+El servicio que he indicado aquí una vez que cree en el servicio.
+Marcelino Heredia 26 minutos 13 segundos
+Habilita en el puerto, ya habilita en el puerto con el comando que nos indique.
+Marcelino Heredia 26 minutos 23 segundos
+Habilitan el puerto.
+Marcelino Heredia 26 minutos 26 segundos
+Una vez que habilitan el puerto, ingresan al servidor punto 1010.
+Marcelino Heredia 26 minutos 31 segundos
+Y verifican que exista conexión con este puerto.
+Marcelino Heredia 26 minutos 38 segundos
+Me dije que tengo conexión en caso que no exista, lo piden a Johnny.
+Marcelino Heredia 26 minutos 43 segundos
+Para que habiliten su parte.
+Marcelino Heredia 26 minutos 46 segundos
+Ya.
+Marcelino Heredia 26 minutos 48 segundos
+Como el siguiente paso es abren a cada archivo de configuración del lo de este mismo servidor de la 10:10.
+Marcelino Heredia 26 minutos 57 segundos
+y crean una copia como les decía crean una copia de esto y lo que hacen es reemplazar reemplazan nada más por el servicio que ustedes están publicando en este caso los que van a publicar por ejemplo es el servicio solamente yo le pongo el servicio SV
+Marcelino Heredia 27 minutos 17 segundos
+De servicio.
+Marcelino Heredia 27 minutos 20 segundos
+División, nosotros Wallet.
+Marcelino Heredia 27 minutos 26 segundos
+Sí.
+Marcelino Heredia 27 minutos 35 segundos
+O.
+Marcelino Heredia 27 minutos 37 segundos
+Entonces pongo a sustituir a todos.
+Marcelino Heredia 27 minutos 40 segundos
+Y ya está, entonces yo tengo mi servicio aquí, lo que voy a hacer es modifico el la IP del servidor y el puerto con el que va a estar trabajando mi servicio.
+Marcelino Heredia 27 minutos 52 segundos
+Y internamente, cuando cuando consulten.
+Marcelino Heredia 27 minutos 57 segundos
+consulten aquí en en la ruta les debería retornar digamos el servicio no o básicamente si quieren validar que esté
+Marcelino Heredia 28 minutos 13 segundos
+Validar, por ejemplo, en este caso, la ruta.
+Marcelino Heredia 28 minutos 17 segundos
+pueden hacerlo con a través de un este ¿no? por ejemplo de postman el servicio lo abren con postman por ejemplo aquí en el caso de mi servicio y estoy apuntando aquí yo tengo mi servicio apps punto con
+Marcelino Heredia 28 minutos 34 segundos
+Entonces esto, este es mi servicio que vendría a hacer este mes.
+Marcelino Heredia 28 minutos 42 segundos
+Okay.
+Marcelino Heredia 28 minutos 54 segundos
+Thank you.
+Marcelino Heredia 28 minutos 57 segundos
+Oh.
+Marcelino Heredia 29 minutos 10 segundos
+Me.
+Marcelino Heredia 29 minutos 12 segundos
+Sí.
+Marcelino Heredia 29 minutos 15 segundos
+es lo mismo que les pasé que les dije estoy apuntando un puerto un servidor un puerto y la ruta es la es la ruta que estoy haciendo aquí yo consulto puedo contar mis servicios aquí también un
+Marcelino Heredia 29 minutos 32 segundos
+Consulto este el login, el login, bueno, todos los set points que yo he creado dentro dentro del point.
+Marcelino Heredia 29 minutos 40 segundos
+Y este es el hospital.
+Marcelino Heredia 29 minutos 43 segundos
+Por su papel.
+Marcelino Heredia 29 minutos 44 segundos
+Eso es lo más que todo.
+Marcelino Heredia 29 minutos 49 segundos
+Ya.
+Marcelino Heredia 29 minutos 52 segundos
+Le voy a pasar el la sube, lo tengo.
+Marcelino Heredia 29 minutos 56 segundos
+Yeah, okay.
+
+Xiomara Unzueta
+ detuvo la transcripción
