@@ -115,6 +115,14 @@ export default function CampanasScreen() {
       Alert.alert('Validación', 'El campo "Nombre" es obligatorio')
       return
     }
+    if (!formData.fechaInicio) {
+      Alert.alert('Validación', 'La fecha de inicio es obligatoria')
+      return
+    }
+    if (!formData.fechaFin) {
+      Alert.alert('Validación', 'La fecha de fin es obligatoria')
+      return
+    }
     setSaving(true)
     try {
       if (editing) {

@@ -29,7 +29,7 @@ describe('utilidades del formulario PSR', () => {
   it('convierte fechas entre API y presentación dd/mm/yyyy hh:mm', () => {
     expect(formatDisplayDate('2026-07-24')).toBe('24/07/2026')
     expect(formatDisplayDate('2026-07-24T14:30')).toBe('24/07/2026 14:30')
-    expect(formatApiDate(new Date(2026, 6, 24, 0, 0))).toBe('2026-07-24T00:00')
+    expect(formatApiDate(new Date(2026, 6, 24, 0, 0))).toBe('2026-07-24T00:00:00-05:00')
   })
 
   it('valida fechas reales y calcula meses', () => {
