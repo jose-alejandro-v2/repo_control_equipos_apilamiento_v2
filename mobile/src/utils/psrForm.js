@@ -1,5 +1,5 @@
 const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/
-const ISO_DATETIME_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2})?$/
+const ISO_DATETIME_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2})?(?:[+-]\d{2}:\d{2})?$/
 
 export function extractApiList(response, catalogName) {
   const body = response?.data ?? response
