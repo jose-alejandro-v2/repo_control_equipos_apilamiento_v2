@@ -62,7 +62,7 @@ Registrado por: JUAN PEREZ
 |---|---|
 | `mobile/src/navigation/AppNavigator.js` | `navigateFromNotification` ahora navega a `EquipoDetail` para los 4 tipos: `INGRESO_EQUIPO`, `AVERIA_REPORTADA`, `AVERIA_ATENDIDA`, `SERVICIO_FINALIZADO`. |
 | `mobile/src/push.js` | Importación de `@react-native-firebase/messaging` sin `.default` (elimina los warnings de API deprecada v22). |
-| `mobile/package.json` | `start` con `--host 10.13.18.71 --port 8081` + script `reverse` (`adb reverse tcp:8081 tcp:8081`) para solucionar *Cannot connect to Metro*. |
+| `mobile/package.json` | `start` con `--host 10.13.18.71 --port 6109` + script `reverse` (`adb reverse tcp:6109 tcp:6109`) para solucionar *Cannot connect to Metro*. |
 
 ---
 

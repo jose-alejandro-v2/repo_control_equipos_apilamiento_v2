@@ -1,5 +1,10 @@
 # Java / Maven
-target/
+classes/
+generated-sources/
+generated-test-sources/
+maven-archiver/
+maven-status/
+test-classes/
 *.jar
 *.war
 effective-pom.xml

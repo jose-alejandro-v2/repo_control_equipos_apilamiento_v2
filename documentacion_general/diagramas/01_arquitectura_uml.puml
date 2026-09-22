@@ -26,7 +26,7 @@ node "Servidor de Aplicaciones\nDocker Compose" as docker {
     component "Proxy /api/v1" as proxy
   }
 
-  node "Backend Container\nQuarkus 3.14.4 / Java 21\n:8082" as backend {
+  node "Backend Container\nQuarkus 3.14.4 / Java 21\n:6111" as backend {
     component "REST API /api/v1" as api
     component "Servicios de negocio" as services
     component "Hibernate ORM Panache" as orm

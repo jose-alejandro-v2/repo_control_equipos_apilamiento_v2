@@ -16,8 +16,8 @@ Hay **4 piezas** que trabajan juntas y cada una es obligatoria:
    - **Persistencia de la URL en SecureStore** (`react-native-keychain`).
    - **Interceptor de request** que lee la URL guardada **en cada petición** y la coloca como `baseURL`, además inyecta `Authorization: Bearer <token>`.
    - **Interceptor de respuesta** que borra el token si el backend responde `401`.
-3. **`AndroidManifest.xml`** → `android:usesCleartextTraffic="true"` (permite HTTP plano), poque la URL es `http://<IP>:8082` sin TLS.
-4. **Backend** → escucha en `0.0.0.0` (no en `127.0.0.1`) y expone el puerto 8082 mapeado en Docker. API base path `/api/v1`.
+3. **`AndroidManifest.xml`** → `android:usesCleartextTraffic="true"` (permite HTTP plano), poque la URL es `http://<IP>:6111` sin TLS.
+4. **Backend** → escucha en `0.0.0.0` (no en `127.0.0.1`) y expone el puerto 6111 mapeado en Docker. API base path `/api/v1`.
 
 El resultado: **la URL es un dato de runtime**. El usuario la puede corregir desde la app (pantalla de verificación, botón "Configurar servidor" del login o Settings) sin tocar código ni recompilar el APK.
 
@@ -44,7 +44,7 @@ ServerCheckScreen (useEffect al montar):
 - Al pulsar **"Guardar y probar"**: `setApiUrl(normalizada)` (persiste en Keychain) → re-testa la misma URL → si OK, navega a Login.
 - Al pulsar **"Reintentar con la URL actual"**: repite el test con la URL que ya está guardada (sirve si el backend tardó en arrancar).
 
-**Login (pantalla siguiente) usa la MISMA URL** porque el interceptor de axios la resuelve por request. No hay conexión "dual": **Metro (8081) sirve el JavaScript, la API (8082) es una conexión directa del celular a la IP de la laptop**.
+**Login (pantalla siguiente) usa la MISMA URL** porque el interceptor de axios la resuelve por request. No hay conexión "dual": **Metro (6109) sirve el JavaScript, la API (6111) es una conexión directa del celular a la IP de la laptop**.
 
 ---
 
@@ -59,8 +59,8 @@ import * as Keychain from 'react-native-keychain'
 const TOKEN_KEY = 'accessToken'
 const API_URL_KEY = 'apiUrl'
 
-const LAN_API_URL = 'http://10.13.18.168:8082/api/v1'   // IP LAN de producción local
-const DEBUG_API_URL = 'http://127.0.0.1:8082/api/v1'    // emulador / adb reverse
+const LAN_API_URL = 'http://10.13.18.168:6111/api/v1'   // IP LAN de producción local
+const DEBUG_API_URL = 'http://127.0.0.1:6111/api/v1'    // emulador / adb reverse
 const IS_DEVELOPMENT = typeof __DEV__ !== 'undefined' && __DEV__
 const FALLBACK_API_URL = IS_DEVELOPMENT ? DEBUG_API_URL : LAN_API_URL
 export const BUILT_IN_API_URL = normalizeApiUrl(process.env.API_URL || FALLBACK_API_URL)
@@ -160,13 +160,13 @@ const handleSaveAndTest = async () => {
 Detalles de comportamiento a respetar:
 - El test se hace contra **el mismo endpoint que expone el backend**: `GET /auth/roles` (público, sin JWT). Si tu backend no tiene `/auth/roles`, usa el endpoint público más liviano de tu API, pero DEBE existir y devolver 200.
 - El `baseURL` override es **por request** (`{ baseURL: urlToTest }`); así el test no contamina la URL global.
-- Normalización: `trim()` + quitar `/` final. Esto evita `http://ip:8082/api/v1/` con doble slash.
+- Normalización: `trim()` + quitar `/` final. Esto evita `http://ip:6111/api/v1/` con doble slash.
 
 ---
 
 ## 5. PERMISOS DE RED EN ANDROID (CAUSA #1 PROBABLE DEL FALLO)
 
-En Android 9+ (API 28+), **el tráfico HTTP plano (`http://`) está bloqueado por defecto**. Si en Insectos Benéficos el `AndroidManifest.xml` NO tiene `usesCleartextTraffic`, TODO request a `http://<IP>:8082` falla con "no se pudo conectar", aunque la IP y el backend estén perfectos.
+En Android 9+ (API 28+), **el tráfico HTTP plano (`http://`) está bloqueado por defecto**. Si en Insectos Benéficos el `AndroidManifest.xml` NO tiene `usesCleartextTraffic`, TODO request a `http://<IP>:6111` falla con "no se pudo conectar", aunque la IP y el backend estén perfectos.
 
 **En Apilamiento está configurado así** (`mobile/android/app/src/main/AndroidManifest.xml:19`):
 
@@ -195,9 +195,9 @@ Para que la laptop sirva la API al celular por WiFi se necesita TODO lo siguient
 | Requisito | Cómo se cumple en Apilamiento | Respuesta (antes de implementar verifica) |
 |---|---|---|
 | Backend escucha en todas las interfaces | `quarkus.http.host=0.0.0.0` (`application.properties:30`) | ¿Tu backend escucha en `0.0.0.0`? |
-| Puerto HTTP expuesto al host | `8082:8082` en `docker-compose.yml` | ¿El puerto HOST está mapeado? |
-| Base path de API | `quarkus.resteasy-reactive.path=/api/v1` → la URL es `http://IP:8082/api/v1` | ¿La URL que escribes termina con el mismo base path que usa tu backend? |
-| Firewall Windows / antivirus dejan pasar el puerto | Validado en la red de la laptop (exclusiones Sophos para el flujo de build; el puerto 8082 accesible) | ¿Hay regla de entrada en el puerto del backend? |
+| Puerto HTTP expuesto al host | `6111:6111` en `docker-compose.yml` | ¿El puerto HOST está mapeado? |
+| Base path de API | `quarkus.resteasy-reactive.path=/api/v1` → la URL es `http://IP:6111/api/v1` | ¿La URL que escribes termina con el mismo base path que usa tu backend? |
+| Firewall Windows / antivirus dejan pasar el puerto | Validado en la red de la laptop (exclusiones Sophos para el flujo de build; el puerto 6111 accesible) | ¿Hay regla de entrada en el puerto del backend? |
 | Celular y laptop en la MISMA red/subred | WiFi del día actual | ¿Están en la misma subred (mismo router, sin aislamiento AP)? |
 
 Prueba de sanidad **desde la laptop** (antes de tocar el celular):
@@ -207,7 +207,7 @@ Prueba de sanidad **desde la laptop** (antes de tocar el celular):
 ipconfig | Select-String -Pattern "IPv4"
 
 # 2. ¿La API responde en esa IP?
-curl http://<IP_LAPTOP>:8082/api/v1/auth/roles
+curl http://<IP_LAPTOP>:6111/api/v1/auth/roles
 ```
 
 Si el `curl` responde OK, la red está bien y el problema está en la app (cleartext/interceptor/URL guardada). Si el `curl` falla, el problema está en backend/firewall/Docker y hay que resolverlo primero.
@@ -218,14 +218,14 @@ Si el `curl` responde OK, la red está bien y el problema está en la app (clear
 
 En Apilamiento co-existen 2 redes WiFi y hay **DOS tipos de URL involucradas** que dependen de la red activa:
 
-1. **URL de Metro (JavaScript, puerto 8081):** el celular carga el JS desde el PC. Se define en la app vía **"Change Bundle Location"** o `adb reverse tcp:8081 tcp:8081`. Si el PC cambia de WiFi, cambia su IP y hay que actualizar esta URL (documentado en AGENTS.md §13.11; ej. IP usada: `10.13.18.71`).
-2. **URL de la API (JSON, puerto 8082):** la que guarda el ServerCheck/Settings en Keychain. Debe apuntar a la **IP actual** de la laptop en la red activa (ej. `10.13.18.168:8082/api/v1`).
+1. **URL de Metro (JavaScript, puerto 6109):** el celular carga el JS desde el PC. Se define en la app vía **"Change Bundle Location"** o `adb reverse tcp:6109 tcp:6109`. Si el PC cambia de WiFi, cambia su IP y hay que actualizar esta URL (documentado en AGENTS.md §13.11; ej. IP usada: `10.13.18.71`).
+2. **URL de la API (JSON, puerto 6111):** la que guarda el ServerCheck/Settings en Keychain. Debe apuntar a la **IP actual** de la laptop en la red activa (ej. `10.13.18.168:6111/api/v1`).
 
 **Causa 99% del "no se pudo conectar" al cambiar de WiFi:** la URL de la API guardada en el celular quedó con la IP de la **otra** WiFi. La red nueva le da otra IP a la laptop y/o bloquea la anterior.
 
 **Flujo correcto al cambiar de WiFi:**
 1. `ipconfig` → obtener la nueva IP de la laptop en la red activa.
-2. En el celular, abrir la app → pantalla de verificación → escribir `http://<NUEVA_IP>:8082/api/v1` → **"Guardar y probar"**.
+2. En el celular, abrir la app → pantalla de verificación → escribir `http://<NUEVA_IP>:6111/api/v1` → **"Guardar y probar"**.
 3. Si la app ya pasó la verificación pero el login falla: abrir "Configurar servidor" (en Login) o Settings y corregir la URL.
 4. Si además usas hot reload con Metro, verificar "Change Bundle Location" con la misma nueva IP del PC.
 
@@ -241,16 +241,16 @@ Si la pantalla muestra **"No se pudo conectar al servidor"** con el mismo escena
 |---|---|---|---|
 | 1 | **Cleartext HTTP permitido** | `android/app/src/main/AndroidManifest.xml` → `android:usesCleartextTraffic="true"` | 🔴 Alta |
 | 2 | **URL guardada de la otra WiFi** | Revisar en el input de la pantalla de verificación qué URL quedó; corregir a la IP actual | 🔴 Alta |
-| 3 | **Backend responde desde la laptop** | `curl http://<IP_LAPTOP>:8082/api/v1/auth/roles` | 🟠 Media |
+| 3 | **Backend responde desde la laptop** | `curl http://<IP_LAPTOP>:6111/api/v1/auth/roles` | 🟠 Media |
 | 4 | **Backend en 0.0.0.0 y puerto mapeado** | host config + `docker ps` / puertos | 🟠 Media |
 | 5 | **Firewall Windows / antivirus** | Regla de entrada para el puerto del backend; excluir app/SDK en Sophos | 🟠 Media |
 | 6 | **Celular y laptop misma subred** | Mismo router WiFi; desactivar aislamiento AP/cliente | 🟡 Media |
 | 7 | **El cliente HTTP aplica la URL por request** | Verificar el interceptor: `baseURL` leído de `loadApiUrl()` en cada request | 🟡 Media/Alta si cambió la URL |
 | 8 | **Base path correcto** | La URL debe terminar con el base path real de la API (`/api/v1` en Apilamiento) | 🟢 Baja |
 | 9 | **Timeout demasiado corto** | El backend/contenerdor frío tarda >5s en la primera respuesta; subir a 10s o presionar "Reintentar" | 🟢 Baja |
-| 10 | **Metro y API confundidos** | Metro=8081 (JS), API=8082 (JSON). La verificación SOLO prueba la API | 🟢 Baja |
+| 10 | **Metro y API confundidos** | Metro=6109 (JS), API=6111 (JSON). La verificación SOLO prueba la API | 🟢 Baja |
 
-**Diagnóstico rápido:** en la laptop, con el backend arriba, ejecuta `curl` con la IP LAN. Si responde, prueba en el celular el endpoint desde el navegador del celular (`http://<IP>:8082/api/v1/auth/roles`) — si el celular no lo abre ni en el navegador, es red/firewall/cleartext del lado del celular; si lo abre en el navegador pero la app falla, es `usesCleartextTraffic` o el interceptor de la app.
+**Diagnóstico rápido:** en la laptop, con el backend arriba, ejecuta `curl` con la IP LAN. Si responde, prueba en el celular el endpoint desde el navegador del celular (`http://<IP>:6111/api/v1/auth/roles`) — si el celular no lo abre ni en el navegador, es red/firewall/cleartext del lado del celular; si lo abre en el navegador pero la app falla, es `usesCleartextTraffic` o el interceptor de la app.
 
 ---
 
@@ -267,7 +267,7 @@ Si la pantalla muestra **"No se pudo conectar al servidor"** con el mismo escena
 5. **Settings**: (opcional pero recomendado) pantalla de configuración con el mismo input de URL.
 6. **Backend**: verificar `0.0.0.0` + puerto mapeado + endpoint público de prueba (`/auth/roles` o equivalente) que devuelva 200.
 7. **Prueba de la red**: desde la laptop, `curl http://<IP_LAPTOP>:<PUERTO>/<basepath>/<endpoint-prueba>`.
-8. **Scripts npm** (iguales que Apilamiento): `start` con `--host <IP_LAPTOP> --port 8081`, `reverse`, `android:debug`, `android:release`.
+8. **Scripts npm** (iguales que Apilamiento): `start` con `--host <IP_LAPTOP> --port 6109`, `reverse`, `android:debug`, `android:release`.
 
 ---
 
@@ -281,8 +281,8 @@ Si la pantalla muestra **"No se pudo conectar al servidor"** con el mismo escena
 | `mobile/src/LoginScreen.js` | Botón colapsable "Configurar servidor" |
 | `mobile/android/app/src/main/AndroidManifest.xml` | `usesCleartextTraffic="true"` + `INTERNET` |
 | `mobile/package.json` | Scripts `start --host <IP>`, `reverse`, `android:debug`, `android:release` |
-| `backend/src/main/resources/application.properties` | `quarkus.http.host=0.0.0.0`, puerto 8082, base path `/api/v1` |
-| `docker-compose.yml` | Mapeo `8082:8082` del backend |
+| `backend/src/main/resources/application.properties` | `quarkus.http.host=0.0.0.0`, puerto 6111, base path `/api/v1` |
+| `docker-compose.yml` | Mapeo `6111:6111` del backend |
 | `documentacion_general/sdd/09_workflow_desarrollo_mobile_debug.md` | Workflow debug APK + Metro (contexto de las 2 WiFis) |
 | `documentacion_general/LOGIN_MODELO_REUTILIZABLE.md` | Lógica completa de login (complemento de esta guía) |
 
@@ -297,7 +297,7 @@ Si la pantalla muestra **"No se pudo conectar al servidor"** con el mismo escena
 5. `usesCleartextTraffic="true"` es INDISPENSABLE para `http://` en Android 9+.
 6. Backend debe escuchar en `0.0.0.0` y el puerto debe estar mapeado y abierto en el firewall.
 7. La URL debe terminar con el base path real (`/api/v1`).
-8. Metro (8081) y API (8082) son cosas distintas; al cambiar de WiFi hay que actualizar **ambas** IPs (bundle location + URL API).
+8. Metro (6109) y API (6111) son cosas distintas; al cambiar de WiFi hay que actualizar **ambas** IPs (bundle location + URL API).
 9. Si el navegador del celular abre la URL pero la app no, es cleartext o interceptor.
 10. Ante duda, muévete con `ipconfig` + `curl` antes de tocar la app.
 

@@ -52,8 +52,8 @@ Ver `documentacion_general/sdd/09_workflow_desarrollo_mobile_debug.md` para el d
 |---|---|
 | APK debug usa Metro (bundle no embebido) | Hot reload inmediato; requiere Metro + túneles o IP LAN |
 | APK release usa bundle embebido | Sin Metro; rebuild ~1.5–4 min por cambio |
-| Metro | `npm run start` en `mobile/` (escucha en `10.13.18.71:8081`) |
-| Reenvío de puerto | `npm run reverse` (`adb reverse tcp:8081 tcp:8081`) |
+| Metro | `npm run start` en `mobile/` (escucha en `10.13.18.71:6109`) |
+| Reenvío de puerto | `npm run reverse` (`adb reverse tcp:6109 tcp:6109`) |
 
 ---
 

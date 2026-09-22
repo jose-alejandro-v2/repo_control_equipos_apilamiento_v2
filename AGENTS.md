@@ -235,11 +235,11 @@ mapper/EntidadMapper.java          → MapStruct mapper
 | 13 | NO poner lógica de negocio en Controllers (backend) | Violación de Clean Architecture |
 | 14 | NO hacer barrel imports desde `@mui/material` | Impacta rendimiento |
 | 15 | NO commitear archivos `.env` con secretos reales | Solo `.env.example` |
-| 16 | NO cambiar mapa de puertos Docker (80, 443, 8082, 5433) | Configuración validada y funcionando |
-| 17 | NO cambiar cadena de conexión a DB (postgres:5432 / host:5433) | Evita conflictos con PostgreSQL local |
+| 16 | NO cambiar mapa de puertos Docker (6110, 6111, 6112) | Configuración validada y funcionando |
+| 17 | NO cambiar cadena de conexión a DB (postgres:5432 / host:6112) | Evita conflictos con PostgreSQL local |
 | 18 | NO cambiar nombres de contenedores Docker (apilamiento-*) | Referenciados en configuración Nginx y red Docker |
 | 19 | NO cambiar `application.properties` (puerto, host, CORS, JWT, timezone) | Configuración validada en producción local |
-| 20 | NO cambiar URL de API Mobile sin validación | `10.13.18.168:8082` es la IP LAN validada |
+| 20 | NO cambiar URL de API Mobile sin validación | `127.0.0.1:6111` es la URL hardcoded fallback |
 | 21 | NO cambiar nginx/default.conf (rutas, upstreams, proxy) | Proxy inverso validado y funcionando |
 | 22 | NO cambiar configuración de orquestación Docker Compose | Dependencias y healthchecks validados |
 | 23 | NO cambiar versión de PostgreSQL 18 | Motor oficial congelado |
@@ -559,30 +559,29 @@ Esta sección documenta la configuración actual de puertos, conexiones y URLs d
 
 | Servicio | Puerto Host | Puerto Contenedor | Protocolo | Uso |
 |---|---|---|---|---|
-| Nginx (Frontend + Proxy) | 80 | 80 | HTTP | Frontend SPA + Proxy API |
-| Nginx (HTTPS futuro) | 443 | 443 | HTTPS | Reservado para SSL |
-| Backend Quarkus | 8082 | 8080 | HTTP | API REST |
-| PostgreSQL 18 | 5433 | 5432 | TCP | Base de datos (Host:5433 para evitar conflicto con PostgreSQL local en 5432) |
+| Nginx (Frontend + Proxy) | 6110 | 80 | HTTP | Frontend SPA + Proxy API |
+| Backend Quarkus | 6111 | 8080 | HTTP | API REST |
+| PostgreSQL 18 | 6112 | 5432 | TCP | Base de datos (Host:6112 para evitar conflicto con PostgreSQL local en 5432) |
 
 ### 13.2 URLs de Acceso (Entorno Local Docker)
 
 | Servicio | URL | Descripción |
 |---|---|---|
-| Frontend Web (SPA) | `http://localhost/` | Aplicación React con ruteo client-side |
-| API Backend | `http://localhost/api/v1/` | Proxy inverso Nginx → backend:8080 |
-| Health Check | `http://localhost/health` | Estado del backend Quarkus |
-| Swagger UI | `http://localhost/swagger` | Documentación OpenAPI |
-| Swagger JSON | `http://localhost/q/openapi` | Especificación OpenAPI en JSON |
-| Conexión DB (externo) | `localhost:5433` | Clientes externos (VS Code, DBeaver, pgAdmin) |
+| Frontend Web (SPA) | `http://localhost:6110/` | Aplicación React con ruteo client-side |
+| API Backend | `http://localhost:6110/api/v1/` | Proxy inverso Nginx → backend:8080 |
+| Health Check | `http://localhost:6110/health` | Estado del backend Quarkus |
+| Swagger UI | `http://localhost:6110/swagger` | Documentación OpenAPI |
+| Swagger JSON | `http://localhost:6110/q/openapi` | Especificación OpenAPI en JSON |
+| Conexión DB (externo) | `localhost:6112` | Clientes externos (VS Code, DBeaver, pgAdmin) |
 | Conexión DB (Docker) | `postgres:5432` | Red interna Docker entre contenedores |
 
 ### 13.3 Nombres de Contenedores (NO CAMBIAR)
 
 | Contenedor | Imagen | Puerto Expuesto |
 |---|---|---|
-| `apilamiento-nginx` | `nginx:alpine` (build local) | 80, 443 |
-| `apilamiento-backend` | `quarkus:3.14` (build local) | 8082 |
-| `apilamiento-postgres` | `postgres:18` | 5433 → 5432 |
+| `apilamiento-nginx` | `nginx:alpine` (build local) | 6110 |
+| `apilamiento-backend` | `quarkus:3.14` (build local) | 6111 |
+| `apilamiento-postgres` | `postgres:18` | 6112 → 5432 |
 
 ### 13.4 Cadena de Conexión a Base de Datos
 
@@ -590,25 +589,25 @@ Esta sección documenta la configuración actual de puertos, conexiones y URLs d
 |---|---|
 | Backend (Docker) | `jdbc:postgresql://postgres:5432/repo_control_equipos_apilamiento` |
 | Backend (dev local) | `jdbc:postgresql://localhost:5432/repo_control_equipos_apilamiento` |
-| Cliente externo | `jdbc:postgresql://localhost:5433/repo_control_equipos_apilamiento` |
+| Cliente externo | `jdbc:postgresql://localhost:6112/repo_control_equipos_apilamiento` |
 
 ### 13.5 Configuración Mobile (APK)
 
 | Parámetro | Valor | Dónde se define |
 |---|---|---|
-| API URL (LAN) | `http://10.13.18.168:8082/api/v1` | `mobile/src/api.js:6` |
-| API URL (debug) | `http://127.0.0.1:8082/api/v1` | `mobile/src/api.js:7` |
-| API URL (production) | Configurable en runtime con `setApiUrl(url)` | `mobile/src/api.js` |
+| API URL (hardcoded fallback) | `http://127.0.0.1:6111/api/v1` | `mobile/src/api.js:11` |
+| API URL (runtime) | Configurable en ServerCheckScreen o Settings | `mobile/src/api.js` |
 | Almacenamiento de token | `react-native-keychain` (SecureStore) | `mobile/src/api.js` |
-| Timeout de API | 15000ms | `mobile/src/api.js:53` |
+| Timeout de API | 15000ms | `mobile/src/api.js` |
+| Patrón URL | Una sola URL hardcoded + ServerCheckScreen como gateway obligatorio (sin debug/release) | Adoptado de insectos beneficos |
 
 ### 13.6 Configuración Frontend Web
 
 | Parámetro | Valor | Dónde se define |
 |---|---|---|
 | API Base URL | `/api/v1` (proxy Nginx) | `nginx/default.conf` |
-| CORS Origins | `http://localhost:3000, http://localhost:5173, http://localhost:5174` | `application.properties:30` |
-| Puerto dev Vite | 5173 (por defecto) | `vite.config` implícito |
+| CORS Origins | `http://localhost:3000, http://localhost:6108, http://localhost:5174` | `application.properties:30` |
+| Puerto dev Vite | 6108 (por defecto) | `vite.config` implícito |
 
 ### 13.7 Configuración Backend
 
@@ -664,8 +663,8 @@ Script automatizado (selector interactivo de serial):
 Comandos comunes (manual):
 ```powershell
 adb devices -l
-adb -s $serial reverse tcp:8081 tcp:8081
-adb -s $serial reverse tcp:8082 tcp:8082
+adb -s $serial reverse tcp:6109 tcp:6109
+adb -s $serial reverse tcp:6111 tcp:6111
 adb -s $serial install -r $apk
 ```
 
@@ -679,14 +678,14 @@ Configuración validada el 2026-08-12. Detalle completo en `documentacion_genera
 |---|---|
 | APK debug usa Metro (bundle no embebido) | Hot reload inmediato; requiere Metro + túneles o IP LAN |
 | APK release usa bundle embebido | Sin Metro; rebuild ~1.5–4 min por cambio |
-| Metro | `npm run start -- --reset-cache` en `mobile/` — escucha en `0.0.0.0:8081` |
-| Servicios requeridos | Backend Docker `8082`, Metro `8081`, Celulares `adb devices` en `device` |
-| "Unable to load script" | = Metro/túnel 8081 inalcanzable AL abrir (el JS ni arranca; ServerCheck no aplica) |
+| Metro | `npm run start -- --reset-cache` en `mobile/` — escucha en `0.0.0.0:6109` |
+| Servicios requeridos | Backend Docker `6111`, Metro `6109`, Celulares `adb devices` en `device` |
+| "Unable to load script" | = Metro/túnel 6109 inalcanzable AL abrir (el JS ni arranca; ServerCheck no aplica) |
 | Error 500 `UnableToResolveError` | Caché Metro corrupta → limpiar `.metro-cache` + reiniciar con `--reset-cache` |
-| Conectar por WiFi | `adb pair IP:puerto codigo` (código expira ~2 min) → copiar nombre EXACTO de `adb devices -l` → `adb reverse tcp:8081/8082` |
-| Cel 2 (85ijey5tdax8ob5p) | Usa túnel adb `localhost:8081` para Metro |
-| Cel 1 app original (user 0, qctoduvsa6v4cyhi) | Bundle configurado en IP LAN directa `10.13.18.71:8081` (no depende de túneles) |
-| Cel 1 app dual (user 999 XSpace) | El túnel adb NO le aplica (aislamiento); bundle configurado en IP LAN directa `10.13.18.71:8081` |
+| Conectar por WiFi | `adb pair IP:puerto codigo` (código expira ~2 min) → copiar nombre EXACTO de `adb devices -l` → `adb reverse tcp:6109/6111` |
+| Cel 2 (85ijey5tdax8ob5p) | Usa túnel adb `localhost:6109` para Metro |
+| Cel 1 app original (user 0, qctoduvsa6v4cyhi) | Bundle configurado en IP LAN directa `10.13.18.71:6109` (no depende de túneles) |
+| Cel 1 app dual (user 999 XSpace) | El túnel adb NO le aplica (aislamiento); bundle configurado en IP LAN directa `10.13.18.71:6109` |
 | Regla general | Si cambia la IP LAN del PC, actualizar "Change Bundle Location" en ambas apps del Cel 1 |
 
 Despliegue en la sección siguiente o en `documentacion_general/sdd/07_build_android_gradle.md`.

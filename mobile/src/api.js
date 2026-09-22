@@ -1,24 +1,33 @@
 import axios from 'axios'
 import * as Keychain from 'react-native-keychain'
+import { API_BASE_URL } from './config'
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// CONFIGURACIÓN CONGELADA — NO MODIFICAR sin autorización del arquitecto
-// LAN_API_URL y DEBUG_API_URL validados y funcionando. Ver AGENTS.md sección 13.
+// Sin URL hardcodeada. La URL se ingresa desde ServerCheckScreen la primera vez
+// y se guarda en SecureStore. Para migrar de entorno, ingresar nueva URL en la app.
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const TOKEN_KEY = 'accessToken'
 const API_URL_KEY = 'apiUrl'
-const LAN_API_URL = 'http://10.13.10.24:82/control_equipos/api/v1'
-const DEBUG_API_URL = 'http://127.0.0.1:8082/api/v1'
-const IS_DEVELOPMENT = typeof __DEV__ !== 'undefined' && __DEV__
-const FALLBACK_API_URL = IS_DEVELOPMENT ? DEBUG_API_URL : LAN_API_URL
-export const BUILT_IN_API_URL = normalizeApiUrl(process.env.API_URL || FALLBACK_API_URL)
+export const BUILT_IN_API_URL = normalizeApiUrl(API_BASE_URL) || ''
 
 let _cachedApiUrl = null
 let _cachedToken = null
 
 function normalizeApiUrl(url) {
-  return String(url || '').trim().replace(/\/+$/, '')
+  let s = String(url || '').trim().replace(/\/+$/, '')
+  if (!s) return s
+  if (/^\d{1,3}(\.\d{1,3}){3}$/.test(s)) s = `http://${s}:6111/api/v1`
+  else {
+    if (!/^https?:\/\//i.test(s)) s = `http://${s}`
+    try {
+      const u = new URL(s)
+      if (!u.port) u.port = '6111'
+      if (!u.pathname.endsWith('/api/v1')) u.pathname = u.pathname.replace(/\/+$/, '') + '/api/v1'
+      s = u.toString()
+    } catch { /* keep as-is */ }
+  }
+  return s.replace(/\/+$/, '')
 }
 
 export async function loadApiUrl() {

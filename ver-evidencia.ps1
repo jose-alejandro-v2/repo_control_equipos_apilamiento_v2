@@ -27,7 +27,7 @@ $token = Get-Content $tokenPath -Raw | ForEach-Object { $_.Trim() }
 $headers = @{ Authorization = "Bearer $token" }
 
 try {
-  Invoke-WebRequest -Uri "http://localhost:8082/api/v1/ingresos-equipo/$equipoId/evidencias/$tipo/archivo" -Headers $headers -OutFile $out -UseBasicParsing
+  Invoke-WebRequest -Uri "http://localhost:6111/api/v1/ingresos-equipo/$equipoId/evidencias/$tipo/archivo" -Headers $headers -OutFile $out -UseBasicParsing
   Write-Output "Descargado: $out"
   Invoke-Item $out
 } catch {

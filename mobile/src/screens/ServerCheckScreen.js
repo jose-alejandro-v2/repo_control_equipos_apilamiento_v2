@@ -132,7 +132,7 @@ export default function ServerCheckScreen({ onReady }) {
               </View>
 
               <Text style={styles.helpText}>
-                Ingresa la URL del servidor backend (IP de la laptop + puerto 8082 + /api/v1).
+                Ingresa la URL del servidor backend (IP de la laptop + puerto 6111 + /api/v1).
                 Asegúrate de que el celular esté en la misma red Wi-Fi que la laptop.
               </Text>
 
@@ -142,7 +142,7 @@ export default function ServerCheckScreen({ onReady }) {
                 onChangeText={setDraftUrl}
                 autoCapitalize="none"
                 autoCorrect={false}
-                placeholder="http://192.168.18.229:8082/api/v1"
+                placeholder="http://10.13.18.168:6111/api/v1"
                 style={styles.input}
               />
 

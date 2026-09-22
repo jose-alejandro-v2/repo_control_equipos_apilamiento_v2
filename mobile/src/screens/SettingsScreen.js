@@ -52,7 +52,7 @@ export default function SettingsScreen() {
             mode="outlined"
             value={apiUrl}
             onChangeText={setApiUrlState}
-            placeholder="http://servidor:8080/api/v1"
+            placeholder="http://servidor:6111/api/v1"
             style={styles.input}
             autoCapitalize="none"
             autoCorrect={false}

@@ -254,19 +254,19 @@ La siguiente configuración corresponde al ambiente de desarrollo local y está 
 
 | Servicio | Puerto Host | Puerto Contenedor | Uso |
 |---|---|---|---|
-| Nginx | 80 / 443 | 80 / 443 | Frontend SPA + Proxy API |
-| Backend Quarkus | 8082 | 8082 | API REST |
-| PostgreSQL 18 | 5433 | 5432 | Base de datos |
+| Nginx | 6110 / 443 | 80 / 443 | Frontend SPA + Proxy API |
+| Backend Quarkus | 6111 | 6111 | API REST |
+| PostgreSQL 18 | 6112 | 5432 | Base de datos |
 
 ### URLs de Acceso
 
 | URL | Descripción |
 |---|---|
-| `http://localhost/` | Frontend Web SPA |
-| `http://localhost/api/v1/` | API Backend (proxy Nginx) |
-| `http://localhost/health` | Health Check |
-| `http://localhost/swagger` | Swagger UI |
-| `localhost:5433` | Conexión DB externa (DBeaver, pgAdmin) |
+| `http://localhost:6110/` | Frontend Web SPA |
+| `http://localhost:6110/api/v1/` | API Backend (proxy Nginx) |
+| `http://localhost:6110/health` | Health Check |
+| `http://localhost:6110/swagger` | Swagger UI |
+| `localhost:6112` | Conexión DB externa (DBeaver, pgAdmin) |
 
 ### Dependencias de Contenedores
 

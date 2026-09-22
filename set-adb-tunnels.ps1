@@ -1,9 +1,9 @@
 ﻿<#
 .SYNOPSIS
-  Configura túneles ADB reverse (8081 Metro + 8082 backend) para TODOS los dispositivos conectados a la vez.
+   Configura túneles ADB reverse (6109 Metro + 6111 backend) para TODOS los dispositivos conectados a la vez.
 .DESCRIPTION
   Cada dispositivo debug necesita sus propios túneles adb reverse para alcanzar
-  Metro (127.0.0.1:8081) y la API (127.0.0.1:8082) desde el PC.
+    Metro (127.0.0.1:6109) y la API (127.0.0.1:6111) desde el PC.
   Este script detecta todos los dispositivos ADB conectados y configura ambos
   túneles en cada uno, permitiendo ejecutar la app en 2 celulares simultáneamente.
 .PARAMETER ReloadApp
@@ -33,8 +33,8 @@ function Get-AdbDevices {
 # ─── 2. Configurar túneles en un dispositivo ───
 function Set-Tunnels {
   param([string]$Serial)
-  adb -s $Serial reverse tcp:8081 tcp:8081 | Out-Null
-  adb -s $Serial reverse tcp:8082 tcp:8082 | Out-Null
+  adb -s $Serial reverse tcp:6109 tcp:6109 | Out-Null
+  adb -s $Serial reverse tcp:6111 tcp:6111 | Out-Null
   $list = adb -s $Serial reverse --list
   return ($list -join "`n")
 }
@@ -42,9 +42,9 @@ function Set-Tunnels {
 # ─── 3. Verificar túneles en un dispositivo ───
 function Test-Tunnels {
   param([string]$Serial)
-  $ok8081 = adb -s $Serial shell "toybox nc -z -w 3 127.0.0.1 8081; echo exit:`$?" 2>$null | Select-String -Pattern 'exit:0'
-  $ok8082 = adb -s $Serial shell "toybox nc -z -w 3 127.0.0.1 8082; echo exit:`$?" 2>$null | Select-String -Pattern 'exit:0'
-  return [bool]($ok8081 -and $ok8082)
+  $ok6109 = adb -s $Serial shell "toybox nc -z -w 3 127.0.0.1 6109; echo exit:`$?" 2>$null | Select-String -Pattern 'exit:0'
+  $ok6111 = adb -s $Serial shell "toybox nc -z -w 3 127.0.0.1 6111; echo exit:`$?" 2>$null | Select-String -Pattern 'exit:0'
+  return [bool]($ok6109 -and $ok6111)
 }
 
 # ════════════════════════════════════════════════════════════
@@ -69,8 +69,8 @@ Write-Host ""
 foreach ($d in $devices) {
   Write-Host "  → Configurando túneles en $($d.Serial)..." -ForegroundColor Cyan
   $tunnels = Set-Tunnels -Serial $d.Serial
-  if ($tunnels -match '8081' -and $tunnels -match '8082') {
-    Write-Host "    ✓ tcp:8081 (Metro) + tcp:8082 (API) OK" -ForegroundColor Green
+  if ($tunnels -match '6109' -and $tunnels -match '6111') {
+    Write-Host "    ✓ tcp:6109 (Metro) + tcp:6111 (API) OK" -ForegroundColor Green
   } else {
     Write-Host "    ✗ No se registraron los túneles esperados:" -ForegroundColor Red
     Write-Host "      $tunnels"
@@ -83,7 +83,7 @@ Write-Host "  → Verificando alcance de Metro y API..." -ForegroundColor Cyan
 $allOk = $true
 foreach ($d in $devices) {
   if (Test-Tunnels -Serial $d.Serial) {
-    Write-Host "    ✓ $($d.Serial) alcanza 127.0.0.1:8081 y 127.0.0.1:8082" -ForegroundColor Green
+    Write-Host "    ✓ $($d.Serial) alcanza 127.0.0.1:6109 y 127.0.0.1:6111" -ForegroundColor Green
   } else {
     Write-Host "    ✗ $($d.Serial) no alcanza los puertos. ¿Metro/backend corriendo?" -ForegroundColor Yellow
     $allOk = $false
@@ -104,5 +104,5 @@ if ($ReloadApp) {
 
 Write-Host "`nListo. Los $($devices.Count) dispositivos pueden ejecutar la app en paralelo.`n" -ForegroundColor Green
 if (-not $allOk) {
-  Write-Host "Nota: Verifique que Metro (8081) y el backend (8082) estén corriendo en el PC." -ForegroundColor Yellow
+  Write-Host "Nota: Verifique que Metro (6109) y el backend (6111) estén corriendo en el PC." -ForegroundColor Yellow
 }

@@ -110,7 +110,7 @@ npm run dev
 # Mobile
 cd mobile
 npm run start        # Metro (debug con hot reload)
-npm run reverse      # adb reverse tcp:8081 tcp:8081
+npm run reverse      # adb reverse tcp:6109 tcp:6109
 
 # Build APK (local Gradle, sin Expo/EAS)
 cd mobile
@@ -122,11 +122,11 @@ npm run android:release  # → android/app/build/outputs/apk/release/app-release
 
 | Servicio | URL |
 |---|---|
-| Frontend SPA | `http://localhost/` |
-| API REST | `http://localhost/api/v1/` |
-| Swagger UI | `http://localhost/swagger` |
-| Health Check | `http://localhost/health` |
-| DB (externo) | `localhost:5433` |
+| Frontend SPA | `http://localhost:6110/` |
+| API REST | `http://localhost:6110/api/v1/` |
+| Swagger UI | `http://localhost:6110/swagger` |
+| Health Check | `http://localhost:6110/health` |
+| DB (externo) | `localhost:6112` |
 
 ---
 

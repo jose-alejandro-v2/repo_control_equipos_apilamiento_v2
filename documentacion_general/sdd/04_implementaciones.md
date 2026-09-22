@@ -258,10 +258,10 @@ El frontend web se sirve a través de Nginx (contenedor `apilamiento-nginx`) en 
 
 | Servicio | URL | Descripción |
 |---|---|---|
-| Frontend (SPA) | `http://localhost/` | Aplicación React (ruteo client-side) |
-| API Backend | `http://localhost/api/v1/` | Proxy inverso hacia backend:8082 |
-| Health Check | `http://localhost/health` | Estado del backend |
-| Swagger UI | `http://localhost/swagger` | Documentación OpenAPI |
+| Frontend (SPA) | `http://localhost:6110/` | Aplicación React (ruteo client-side) |
+| API Backend | `http://localhost:6110/api/v1/` | Proxy inverso hacia backend:6111 |
+| Health Check | `http://localhost:6110/health` | Estado del backend |
+| Swagger UI | `http://localhost:6110/swagger` | Documentación OpenAPI |
 
 **Nota:** El frontend usa `BrowserRouter` de React Router v6. No hay soporte HTTPS configurado en Nginx. Usar siempre `http://localhost`.
 
@@ -269,9 +269,9 @@ El frontend web se sirve a través de Nginx (contenedor `apilamiento-nginx`) en 
 
 | Contenedor | Puerto Host | Puerto Contenedor | Estado |
 |---|---|---|---|
-| `apilamiento-nginx` | 80 / 443 | 80 / 443 | Sirve SPA + proxy API |
-| `apilamiento-backend` | 8082 | 8082 | API Quarkus |
-| `apilamiento-postgres` | 5433 | 5432 | PostgreSQL 18 |
+| `apilamiento-nginx` | 6110 / 443 | 80 / 443 | Sirve SPA + proxy API |
+| `apilamiento-backend` | 6111 | 6111 | API Quarkus |
+| `apilamiento-postgres` | 6112 | 5432 | PostgreSQL 18 |
 
 ## 11.3 Diagnóstico Aplicado (2026-07-21)
 
@@ -309,10 +309,10 @@ La siguiente configuración de infraestructura está validada y en funcionamient
 
 | Servicio | Puerto Host | Puerto Contenedor | Protocolo |
 |---|---|---|---|
-| Nginx (Frontend + Proxy) | 80 | 80 | HTTP |
+| Nginx (Frontend + Proxy) | 6110 | 80 | HTTP |
 | Nginx (HTTPS futuro) | 443 | 443 | HTTPS |
-| Backend Quarkus | 8082 | 8082 | HTTP |
-| PostgreSQL 18 | 5433 | 5432 | TCP |
+| Backend Quarkus | 6111 | 6111 | HTTP |
+| PostgreSQL 18 | 6112 | 5432 | TCP |
 
 ## 12.2 URLs de Acceso (Entorno Local Docker)
 
@@ -323,7 +323,7 @@ La siguiente configuración de infraestructura está validada y en funcionamient
 | Health Check | `http://localhost/health` |
 | Swagger UI | `http://localhost/swagger` |
 | Swagger JSON | `http://localhost/q/openapi` |
-| Conexión DB (externo) | `localhost:5433` |
+| Conexión DB (externo) | `localhost:6112` |
 | Conexión DB (Docker) | `postgres:5432` |
 
 ## 12.3 Cadena de Conexión a Base de Datos
@@ -332,15 +332,15 @@ La siguiente configuración de infraestructura está validada y en funcionamient
 |---|---|
 | Backend (Docker) | `jdbc:postgresql://postgres:5432/repo_control_equipos_apilamiento` |
 | Backend (dev local) | `jdbc:postgresql://localhost:5432/repo_control_equipos_apilamiento` |
-| Cliente externo | `jdbc:postgresql://localhost:5433/repo_control_equipos_apilamiento` |
+| Cliente externo | `jdbc:postgresql://localhost:6112/repo_control_equipos_apilamiento` |
 
 ## 12.4 Configuración Mobile (APK)
 
 | Parámetro | Valor |
 |---|---|
 | Framework | Expo React Native SDK ~54.0.35 (NO migrado a CLI — se mantiene Expo) |
-| API URL (LAN) | `http://10.13.18.168:8082/api/v1` |
-| API URL (debug) | `http://127.0.0.1:8082/api/v1` |
+| API URL (LAN) | `http://10.13.18.168:6111/api/v1` |
+| API URL (debug) | `http://127.0.0.1:6111/api/v1` |
 | Almacenamiento de token | `react-native-keychain` (Keychain/secure storage) |
 | Timeout de API | 15000ms |
 | Navegación | React Navigation 7 (NativeStackNavigator + BottomTabNavigator) |
@@ -354,7 +354,7 @@ La siguiente configuración de infraestructura está validada y en funcionamient
 
 | Parámetro | Valor |
 |---|---|
-| Puerto HTTP | 8082 |
+| Puerto HTTP | 6111 |
 | Host | `0.0.0.0` |
 | API Base Path | `/api/v1` |
 | JWT Expiración | 28800s (8h) |
@@ -1329,7 +1329,7 @@ Registrado por: JUAN PEREZ
 |---|---|
 | `mobile/src/navigation/AppNavigator.js` | `navigateFromNotification` navega a `EquipoDetail` con `data.entidadId` para los 4 `tipo` (`INGRESO_EQUIPO`, `AVERIA_REPORTADA`, `AVERIA_ATENDIDA`, `SERVICIO_FINALIZADO`). |
 | `mobile/src/push.js` | `require('@react-native-firebase/messaging')` sin `.default` → elimina warnings de API deprecada v22. |
-| `mobile/package.json` | `start` con `--host 10.13.18.71 --port 8081` (Metro accesible desde los cels) + script `reverse` (`adb reverse tcp:8081 tcp:8081`). |
+| `mobile/package.json` | `start` con `--host 10.13.18.71 --port 6109` (Metro accesible desde los cels) + script `reverse` (`adb reverse tcp:6109 tcp:6109`). |
 
 ### 39.4 Pruebas
 

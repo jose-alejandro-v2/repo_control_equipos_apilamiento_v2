@@ -257,4 +257,4 @@ Cuando un equipo era **devuelto** (`DEVUELTO`), su PSR/OSR quedaba históricamen
 - Backend reconstruido y desplegado (`docker compose build backend && up -d backend`), health check `UP`, migraciones V26–V29 aplicadas.
 - Suite backend unit: **92 tests, 0 fallos** (excluye `MarcaResourceTest`, `@QuarkusTest` que requiere base de datos viva/entorno — pre-existente).
 - Suite mobile: **77 tests, 0 fallos** (19 suites) + `eslint` limpio.
-- APK debug desplegado en ambos celulares (Xiaomi principal y alterno) con túneles `adb reverse tcp:8081/8082`; los cambios JS se sirven desde Metro (sin bundleInDebug).
+- APK debug desplegado en ambos celulares (Xiaomi principal y alterno) con túneles `adb reverse tcp:6109/6111`; los cambios JS se sirven desde Metro (sin bundleInDebug).

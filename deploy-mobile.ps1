@@ -7,7 +7,7 @@
   2. Permite elegir entre los seriales conocidos
   3. Inicia backend + BD Docker
   4. Inicia Metro bundler (background job)
-  5. Configura túneles ADB (8081, 8082)
+   5. Configura túneles ADB (6109, 6111)
   6. Instala APK debug
   7. Abre la app
   8. Muestra errores en tiempo real
@@ -22,7 +22,7 @@ $SERIAL_ALTERNO   = "85ijey5tdax8ob5p"  # Xiaomi alterno
 # ─── Rutas fijas ───
 $MOBILE_DIR   = "$PSScriptRoot\mobile"
 $APK_PATH     = "$MOBILE_DIR\android\app\build\outputs\apk\debug\app-debug.apk"
-$BACKEND_URL  = "http://localhost:8082/api/v1/auth/roles"
+$BACKEND_URL  = "http://localhost:6111/api/v1/auth/roles"
 
 # ─── 1. Detectar dispositivos ───
 function Select-Device {
@@ -106,9 +106,9 @@ function Start-Metro {
 
   Start-Sleep -Seconds 8
   try {
-    $status = (Invoke-WebRequest http://localhost:8081/status -UseBasicParsing -TimeoutSec 5).StatusCode
+    $status = (Invoke-WebRequest http://localhost:6109/status -UseBasicParsing -TimeoutSec 5).StatusCode
     if ($status -eq 200) {
-      Write-Host "  ✓ Metro corriendo en http://localhost:8081" -ForegroundColor Green
+      Write-Host "  ✓ Metro corriendo en http://localhost:6109" -ForegroundColor Green
     }
   } catch {
     Write-Host "  ✗ Metro no arrancó. Revise la terminal." -ForegroundColor Red
@@ -120,8 +120,8 @@ function Start-Metro {
 function Setup-Tunnels {
   param([string]$Serial)
   Write-Host "[4/7] Configurando túneles ADB..." -ForegroundColor Cyan
-  adb -s $Serial reverse tcp:8081 tcp:8081 | Out-Null
-  adb -s $Serial reverse tcp:8082 tcp:8082 | Out-Null
+  adb -s $Serial reverse tcp:6109 tcp:6109 | Out-Null
+  adb -s $Serial reverse tcp:6111 tcp:6111 | Out-Null
   $list = adb -s $Serial reverse --list
   Write-Host "  $list" -ForegroundColor Gray
 }

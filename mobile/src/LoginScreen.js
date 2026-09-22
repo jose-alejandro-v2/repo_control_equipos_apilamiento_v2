@@ -184,7 +184,7 @@ export default function LoginScreen() {
                 onChangeText={setApiUrlState}
                 autoCapitalize="none"
                 autoCorrect={false}
-                placeholder="http://servidor:8082/api/v1"
+                placeholder="http://servidor:6111/api/v1"
                 style={styles.input}
               />
               <View style={styles.serverButtons}>

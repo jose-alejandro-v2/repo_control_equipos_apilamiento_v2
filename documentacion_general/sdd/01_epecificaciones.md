@@ -315,20 +315,20 @@ La siguiente configuración de infraestructura está validada y funcionando. NO 
 
 | Servicio | Puerto Host | Puerto Contenedor | Protocolo | Uso |
 |---|---|---|---|---|
-| Nginx (Frontend + Proxy) | 80 | 80 | HTTP | Frontend SPA + Proxy API |
+| Nginx (Frontend + Proxy) | 6110 | 80 | HTTP | Frontend SPA + Proxy API |
 | Nginx (HTTPS futuro) | 443 | 443 | HTTPS | Reservado para SSL |
-| Backend Quarkus | 8082 | 8082 | HTTP | API REST |
-| PostgreSQL 18 | 5433 | 5432 | TCP | Base de datos (Host:5433 para evitar conflicto con PostgreSQL local en 5432) |
+| Backend Quarkus | 6111 | 6111 | HTTP | API REST |
+| PostgreSQL 18 | 6112 | 5432 | TCP | Base de datos (Host:6112 para evitar conflicto con PostgreSQL local en 5432) |
 
 ## 15.2 URLs de Acceso
 
 | Servicio | URL | Descripción |
 |---|---|---|
-| Frontend Web (SPA) | `http://localhost/` | Aplicación React con ruteo client-side |
-| API Backend | `http://localhost/api/v1/` | Proxy inverso Nginx → backend:8082 |
-| Health Check | `http://localhost/health` | Estado del backend Quarkus |
-| Swagger UI | `http://localhost/swagger` | Documentación OpenAPI |
-| Conexión DB (externo) | `localhost:5433` | Clientes externos (VS Code, DBeaver, pgAdmin) |
+| Frontend Web (SPA) | `http://localhost:6110/` | Aplicación React con ruteo client-side |
+| API Backend | `http://localhost:6110/api/v1/` | Proxy inverso Nginx → backend:6111 |
+| Health Check | `http://localhost:6110/health` | Estado del backend Quarkus |
+| Swagger UI | `http://localhost:6110/swagger` | Documentación OpenAPI |
+| Conexión DB (externo) | `localhost:6112` | Clientes externos (VS Code, DBeaver, pgAdmin) |
 | Conexión DB (Docker) | `postgres:5432` | Red interna Docker entre contenedores |
 
 ## 15.3 Cadena de Conexión a Base de Datos
@@ -337,14 +337,14 @@ La siguiente configuración de infraestructura está validada y funcionando. NO 
 |---|---|
 | Backend (Docker) | `jdbc:postgresql://postgres:5432/repo_control_equipos_apilamiento` |
 | Backend (dev local) | `jdbc:postgresql://localhost:5432/repo_control_equipos_apilamiento` |
-| Cliente externo | `jdbc:postgresql://localhost:5433/repo_control_equipos_apilamiento` |
+| Cliente externo | `jdbc:postgresql://localhost:6112/repo_control_equipos_apilamiento` |
 
 ## 15.4 Configuración Mobile (APK)
 
 | Parámetro | Valor | Dónde se define |
 |---|---|---|
-| API URL (LAN) | `http://10.13.18.168:8082/api/v1` | `mobile/src/api.js:6` |
-| API URL (debug) | `http://127.0.0.1:8082/api/v1` | `mobile/src/api.js:7` |
+| API URL (LAN) | `http://10.13.18.168:6111/api/v1` | `mobile/src/api.js:6` |
+| API URL (debug) | `http://127.0.0.1:6111/api/v1` | `mobile/src/api.js:7` |
 | Almacenamiento de token | `react-native-keychain` (SecureStore) | `mobile/src/api.js` |
 | Timeout de API | 15000ms | `mobile/src/api.js:53` |
 
@@ -352,7 +352,7 @@ La siguiente configuración de infraestructura está validada y funcionando. NO 
 
 | Parámetro | Valor |
 |---|---|
-| Puerto HTTP | 8082 |
+| Puerto HTTP | 6111 |
 | Host | `0.0.0.0` |
 | API Base Path | `/api/v1` |
 | JWT Expiración | 28800s (8h) |
@@ -364,9 +364,9 @@ La siguiente configuración de infraestructura está validada y funcionando. NO 
 
 | Contenedor | Imagen | Puerto Expuesto |
 |---|---|---|
-| `apilamiento-nginx` | `nginx:alpine` (build local) | 80, 443 |
-| `apilamiento-backend` | `quarkus:3.14` (build local) | 8082 |
-| `apilamiento-postgres` | `postgres:18` | 5433 → 5432 |
+| `apilamiento-nginx` | `nginx:alpine` (build local) | 6110, 443 |
+| `apilamiento-backend` | `quarkus:3.14` (build local) | 6111 |
+| `apilamiento-postgres` | `postgres:18` | 6112 → 5432 |
 
 ## 15.7 Dependencias de Orquestación
 

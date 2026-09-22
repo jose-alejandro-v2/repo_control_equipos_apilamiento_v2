@@ -1,16 +1,17 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "opencode/mimo-v2.5-free",
   "provider": {
     "opencode": {
       "whitelist": [
-        "muse-spark-1.3-free",
+        "big-pickle",
+        "deepseek-v4-flash-free",
+        "jev-1.13-free",
         "ling-3.0-flash-fin-free",
-        "nemotron-3.5-lightning-free",
-        "muse-spark-1.2-free",
-        "nemotron-3-ultra-free",
         "mimo-v2.5-free",
-        "big-pickle"
+        "muse-spark-1.2-contributor-free",
+        "muse-spark-1.3-contributor-free",
+        "nemotron-3-ultra-free",
+        "nemotron-3.5-lightning-free"
       ]
     }
   }

@@ -1,5 +1,18 @@
 export const VERSION_HISTORY = [
   {
+    version: '1.14.1',
+    fecha: '2026-09-22',
+    titulo: 'Fix: reconfiguración de puertos y patrón de URL mobile',
+    cambios: [
+      'Puertos Docker: PostgreSQL 6112, Backend 6111, Nginx 6110, Metro 6109, Vite 6108',
+      'Mobile: una sola URL hardcoded (sin debug/release), patrón adoptado de insectos beneficos',
+      'normalizeApiUrl: acepta solo IP y auto-completa http://IP:6111/api/v1',
+      'network_security_config: cleartext HTTP permitido para cualquier IP',
+      'ServerCheckScreen: gateway obligatorio antes del login',
+      'Documentación: AGENTS.md, README.md y SDD actualizados con nuevos puertos',
+    ],
+  },
+  {
     version: '1.14.0',
     fecha: '2026-09-08',
     titulo: 'Reporte PDF: mejora de UX/UI y fix de descarga en mobile',

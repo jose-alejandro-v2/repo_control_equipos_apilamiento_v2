@@ -28,8 +28,8 @@
 
 | Servicio | Cómo verificar |
 |---|---|
-| Backend Docker | `docker ps` → `apilamiento-backend` Up en `8082` |
-| Metro | `http://127.0.0.1:8081/status` → 200 |
+| Backend Docker | `docker ps` → `apilamiento-backend` Up en `6111` |
+| Metro | `http://127.0.0.1:6109/status` → 200 |
 | Celulares | `adb devices -l` → ambos con estado `device` |
 
 ---
@@ -53,10 +53,10 @@ adb pair <IP_CEL2>:<puerto> <codigo>
 adb devices -l
 
 # 4. Restablecer túneles para cada dispositivo (usar nombre EXACTO)
-adb -s "adb-qctoduvsa6v4cyhi-Iv9Gws (2)._adb-tls-connect._tcp" reverse tcp:8081 tcp:8081
-adb -s "adb-qctoduvsa6v4cyhi-Iv9Gws (2)._adb-tls-connect._tcp" reverse tcp:8082 tcp:8082
-adb -s "adb-85ijey5tdax8ob5p-NMIkJB (2)._adb-tls-connect._tcp" reverse tcp:8081 tcp:8081
-adb -s "adb-85ijey5tdax8ob5p-NMIkJB (2)._adb-tls-connect._tcp" reverse tcp:8082 tcp:8082
+adb -s "adb-qctoduvsa6v4cyhi-Iv9Gws (2)._adb-tls-connect._tcp" reverse tcp:6109 tcp:6109
+adb -s "adb-qctoduvsa6v4cyhi-Iv9Gws (2)._adb-tls-connect._tcp" reverse tcp:6111 tcp:6111
+adb -s "adb-85ijey5tdax8ob5p-NMIkJB (2)._adb-tls-connect._tcp" reverse tcp:6109 tcp:6109
+adb -s "adb-85ijey5tdax8ob5p-NMIkJB (2)._adb-tls-connect._tcp" reverse tcp:6111 tcp:6111
 ```
 
 ### Errores comunes al conectar
@@ -91,7 +91,7 @@ ReactNativeJS: Running "ControlDeEquipos" with {"rootTag":1,...,"fabric":true}
 ## 5. Solucionar "Unable to load script" (pantalla roja)
 
 **Causa**: la app debug no encuentra Metro. Ocurre cuando:
-1. Los túneles `adb reverse tcp:8081` se perdieron (reconexión WiFi/USB), o
+1. Los túneles `adb reverse tcp:6109` se perdieron (reconexión WiFi/USB), o
 2. Metro no está corriendo en el PC.
 
 **La pantalla ServerCheck/Login NO puede ayudar aquí** porque es código JS que vive DENTRO del bundle; si el bundle no carga, ninguna pantalla React corre.
@@ -100,12 +100,12 @@ ReactNativeJS: Running "ControlDeEquipos" with {"rootTag":1,...,"fabric":true}
 
 ```powershell
 # 1. Verificar Metro
-Invoke-WebRequest http://127.0.0.1:8081/status   # debe dar 200
+Invoke-WebRequest http://127.0.0.1:6109/status   # debe dar 200
 
 # 2. Verificar túneles (si vacíos, recrearlos)
 adb -s "<nombre_exacto>" reverse --list
-adb -s "<nombre_exacto>" reverse tcp:8081 tcp:8081
-adb -s "<nombre_exacto>" reverse tcp:8082 tcp:8082
+adb -s "<nombre_exacto>" reverse tcp:6109 tcp:6109
+adb -s "<nombre_exacto>" reverse tcp:6111 tcp:6111
 
 # 3. Reabrir la app (force-stop + start) o pulsar RELOAD en la pantalla roja
 ```
@@ -115,24 +115,24 @@ adb -s "<nombre_exacto>" reverse tcp:8082 tcp:8082
 Si Metro se inició con `npx react-native start --host 10.13.18.71` (o similar), SOLO escucha en esa IP:
 
 ```
-TCP  10.13.18.71:8081  LISTENING   → loopback (127.0.0.1) NO responde
+TCP  10.13.18.71:6109  LISTENING   → loopback (127.0.0.1) NO responde
 ```
 
-Consecuencia: los celulares que usan túnel `adb reverse` (apuntan a `localhost:8081` = `127.0.0.1`) NO encuentran Metro y muestran "Unable to load script" (`loadJSBundleFromAssets`), aunque Cel 1 (IP LAN directa) sí funcione.
+Consecuencia: los celulares que usan túnel `adb reverse` (apuntan a `localhost:6109` = `127.0.0.1`) NO encuentran Metro y muestran "Unable to load script" (`loadJSBundleFromAssets`), aunque Cel 1 (IP LAN directa) sí funcione.
 
 **Corrección**: iniciar Metro con `--host 0.0.0.0` para que escuche en TODAS las interfaces (loopback + LAN):
 
 ```powershell
 # En mobile/
-npx react-native start --host 0.0.0.0 --port 8081
+npx react-native start --host 0.0.0.0 --port 6109
 # o background:
-Start-Process cmd -ArgumentList '/c','npx react-native start --host 0.0.0.0 --port 8081 > metro.log 2>&1' -WorkingDirectory 'C:\repos\repo_control_equipos_apilamiento_v2\mobile' -WindowStyle Hidden
+Start-Process cmd -ArgumentList '/c','npx react-native start --host 0.0.0.0 --port 6109 > metro.log 2>&1' -WorkingDirectory 'C:\repos\repo_control_equipos_apilamiento_v2\mobile' -WindowStyle Hidden
 ```
 
 **Verificar** que escucha en todas las interfaces:
 ```powershell
-netstat -ano | Select-String ':8081' | Select-String 'LISTEN'
-# Debe mostrar:  TCP  0.0.0.0:8081  LISTENING
+netstat -ano | Select-String ':6109' | Select-String 'LISTEN'
+# Debe mostrar:  TCP  0.0.0.0:6109  LISTENING
 ```
 
 > El mensaje de error muestra código del polyfill de console de React Native (setUpGlobals), pero ese código NO es la causa — solo es donde RN presenta el error "Unable to load script" / "Cannot connect to Metro".
@@ -171,19 +171,19 @@ npm run start -- --reset-cache
 
 > **Importante**: esto ya quedó configurado el 2026-08-12 y se PERSISTE en cada app.
 
-### 7.1 Cel 2 — usa túnel adb (localhost:8081)
+### 7.1 Cel 2 — usa túnel adb (localhost:6109)
 
-- Sin configuración especial. Depende de que los túneles `8081` estén vivos.
+- Sin configuración especial. Depende de que los túneles `6109` estén vivos.
 
 ### 7.2 Cel 1 — App Original (usuario 0 "José Anyarín")
 
-- Configurado para usar la **IP LAN del PC directo** (`10.13.18.71:8081`), así NO depende de túneles.
+- Configurado para usar la **IP LAN del PC directo** (`10.13.18.71:6109`), así NO depende de túneles.
 - Se guarda en la preferencia `debug_http_host` de la app.
 
 ### 7.3 Cel 1 — App Dual (usuario 999 "XSpace" / Aplicaciones Duales)
 
 - El túnel `adb reverse` **NO le funciona** (aislamiento de red del Segunda Espacio/XSpace).
-- Configurado para usar la **IP LAN del PC directo** (`10.13.18.71:8081`).
+- Configurado para usar la **IP LAN del PC directo** (`10.13.18.71:6109`).
 
 ### 7.4 Cómo cambiar la IP del bundle si cambia la red del PC
 
@@ -191,7 +191,7 @@ npm run start -- --reset-cache
 # Por UI (en el celular):
 # 1. Abrir Dev Menu:  adb shell input keyevent 82          (o agitar el celular)
 # 2. Seleccionar "Change Bundle Location"
-# 3. Elegir la opción con la IP LAN nueva (ej. 10.13.18.71:8081) y "APPLY CHANGES"
+# 3. Elegir la opción con la IP LAN nueva (ej. 10.13.18.71:6109) y "APPLY CHANGES"
 ```
 
 O directamente escribiendo la preferencia (app debug):

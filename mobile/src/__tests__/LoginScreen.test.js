@@ -17,7 +17,7 @@ jest.mock('../api', () => ({
   setToken: (...args) => mockSetToken(...args),
   loadApiUrl: jest.fn().mockResolvedValue(''),
   setApiUrl: jest.fn(),
-  BUILT_IN_API_URL: 'http://127.0.0.1:8082/api/v1',
+  BUILT_IN_API_URL: 'http://127.0.0.1:6111/api/v1',
 }))
 
 jest.mock('../AuthContext', () => ({
