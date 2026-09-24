@@ -49,7 +49,11 @@ export default function PsrOsr() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [itemToDelete, setItemToDelete] = useState(null)
 
-  const todayStr = new Date().toISOString().slice(0, 10)
+  const todayStr = (() => {
+    const now = new Date()
+    const pad = (n) => String(n).padStart(2, '0')
+    return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`
+  })()
 
   const loadData = useCallback(async () => {
     try {
@@ -119,10 +123,10 @@ export default function PsrOsr() {
       campanaId: item.campanaId || '',
       sedeId: item.sedeId || '',
       numeroPsr: item.numeroPsr || '',
-      fechaPsr: item.fechaPsr || '',
+      fechaPsr: item.fechaPsr ? item.fechaPsr.slice(0, 10) : '',
       motivoId: item.motivoId || '',
-      fechaInicioUso: item.fechaInicioUso || '',
-      fechaFinUso: item.fechaFinUso || '',
+      fechaInicioUso: item.fechaInicioUso ? item.fechaInicioUso.slice(0, 10) : '',
+      fechaFinUso: item.fechaFinUso ? item.fechaFinUso.slice(0, 10) : '',
       observaciones: item.observaciones || '',
     })
     setDialogOpen(true)

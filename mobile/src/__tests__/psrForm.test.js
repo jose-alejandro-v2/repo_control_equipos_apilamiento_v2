@@ -4,6 +4,7 @@ import {
   formatApiDate,
   formatDisplayDate,
   getActiveCampanaId,
+  isDateBefore,
   isValidApiDate,
 } from '../utils/psrForm'
 
@@ -39,5 +40,21 @@ describe('utilidades del formulario PSR', () => {
     expect(calcularMeses('2026-01-01', '2026-01-31')).toBe('1.00')
     expect(calcularMeses('2026-08-01', '2026-10-31')).toBe('3.00')
     expect(calcularMeses('2026-02-01', '2026-01-01')).toBe('')
+  })
+
+  it('compara fechas a nivel de día (igual que el backend)', () => {
+    expect(isDateBefore('2026-07-23', '2026-07-24')).toBe(true)
+    expect(isDateBefore('2026-07-25', '2026-07-24')).toBe(false)
+    expect(isDateBefore('2026-07-24', '2026-07-24')).toBe(false)
+    expect(isDateBefore('2026-07-24T09:00:00-05:00', '2026-07-24T18:30:00-05:00')).toBe(false)
+    expect(isDateBefore('2026-07-23T23:59:00-05:00', '2026-07-24T00:00:00-05:00')).toBe(true)
+  })
+
+  it('compara fechas con formatos mixtos (API sin offset vs mobile con offset)', () => {
+    expect(isDateBefore('2026-07-23T14:30', '2026-07-24T09:00:00-05:00')).toBe(true)
+    expect(isDateBefore('2026-07-24T09:00:00-05:00', '2026-07-24T14:30')).toBe(false)
+    expect(isDateBefore('2026-07-25T09:00:00-05:00', '2026-07-24T14:30')).toBe(false)
+    expect(isDateBefore('', '2026-07-24T14:30')).toBe(false)
+    expect(isDateBefore('2026-07-24T14:30', 'no-es-fecha')).toBe(false)
   })
 })

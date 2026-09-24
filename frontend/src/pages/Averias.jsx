@@ -110,9 +110,9 @@ export default function Averias() {
       equipoId: item.equipoId || '',
       descripcionFalla: item.descripcionFalla || '',
       horometro: item.horometro || '',
-      fechaHoraAveria: item.fechaHoraAveria || '',
+      fechaHoraAveria: item.fechaHoraAveria ? item.fechaHoraAveria.slice(0, 16) : '',
       horometroAtencion: item.horometroAtencion || '',
-      fechaHoraAtencion: item.fechaHoraAtencion || '',
+      fechaHoraAtencion: item.fechaHoraAtencion ? item.fechaHoraAtencion.slice(0, 16) : '',
       accionRealizada: item.accionRealizada || '',
       estadoAveria: item.estadoAveria || '',
     })

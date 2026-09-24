@@ -50,8 +50,8 @@ android {
         applicationId "com.apilamiento.mobile"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 11401
-        versionName "1.14.1"
+        versionCode 11402
+        versionName "1.14.2"
     }
     buildTypes {
         release {

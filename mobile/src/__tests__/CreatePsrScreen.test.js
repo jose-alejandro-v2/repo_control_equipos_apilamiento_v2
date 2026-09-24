@@ -7,6 +7,7 @@ const mockPost = jest.fn()
 const mockPut = jest.fn()
 const mockPopTo = jest.fn()
 let mockRouteParams = {}
+let mockPickedDate = new Date(2026, 6, 24)
 
 jest.mock('../api', () => ({
   __esModule: true,
@@ -56,7 +57,7 @@ jest.mock('@react-native-community/datetimepicker', () => {
     return (
       <Pressable
         testID="date-picker"
-        onPress={() => onChange({ type: 'set' }, new Date(2026, 6, 24))}
+        onPress={() => onChange({ type: 'set' }, mockPickedDate)}
       >
         <Text>Elegir fecha</Text>
       </Pressable>
@@ -156,6 +157,7 @@ describe('CreatePsrScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockRouteParams = {}
+    mockPickedDate = new Date(2026, 6, 24)
     mockPost.mockResolvedValue({ data: { success: true } })
     mockPut.mockResolvedValue({ data: { success: true } })
     mockGet.mockImplementation(endpoint => {
@@ -223,6 +225,64 @@ describe('CreatePsrScreen', () => {
       })
       expect(mockPopTo).toHaveBeenCalledWith('PsrOsr')
     })
+  })
+
+  it('acepta inicio y fin el mismo día con horas distintas (regla por día como el backend)', async () => {
+    const screen = render(<CreatePsrScreen />)
+
+    await waitFor(() => {
+      expect(screen.getAllByText('26-27 (2627)').length).toBeGreaterThan(0)
+    })
+
+    fireEvent.press(screen.getByTestId('select-Sede'))
+    fireEvent.press(screen.getByTestId('select-Motivo'))
+    fireEvent.changeText(screen.getByTestId('input-Número PSR'), 'PSR-002')
+
+    mockPickedDate = new Date(2026, 6, 24, 18, 30)
+    fireEvent.press(screen.getByLabelText('Seleccionar Fecha inicio de uso'))
+    fireEvent.press(screen.getByTestId('date-picker'))
+
+    mockPickedDate = new Date(2026, 6, 24, 9, 0)
+    fireEvent.press(screen.getByLabelText('Seleccionar Fecha fin de uso'))
+    fireEvent.press(screen.getByTestId('date-picker'))
+
+    fireEvent.press(screen.getByTestId('create-psr'))
+
+    await waitFor(() => {
+      expect(mockPost).toHaveBeenCalledWith('/psr', expect.objectContaining({
+        fechaInicioUso: '2026-07-24T18:30:00-05:00',
+        fechaFinUso: '2026-07-24T09:00:00-05:00',
+      }))
+    })
+    expect(screen.getByTestId('input-Fecha fin de uso').props.errorMessage).toBeUndefined()
+  })
+
+  it('bloquea el envío cuando la fecha de fin es anterior a la de inicio', async () => {
+    const screen = render(<CreatePsrScreen />)
+
+    await waitFor(() => {
+      expect(screen.getAllByText('26-27 (2627)').length).toBeGreaterThan(0)
+    })
+
+    fireEvent.press(screen.getByTestId('select-Sede'))
+    fireEvent.press(screen.getByTestId('select-Motivo'))
+    fireEvent.changeText(screen.getByTestId('input-Número PSR'), 'PSR-003')
+
+    mockPickedDate = new Date(2026, 6, 24)
+    fireEvent.press(screen.getByLabelText('Seleccionar Fecha inicio de uso'))
+    fireEvent.press(screen.getByTestId('date-picker'))
+
+    mockPickedDate = new Date(2026, 6, 23)
+    fireEvent.press(screen.getByLabelText('Seleccionar Fecha fin de uso'))
+    fireEvent.press(screen.getByTestId('date-picker'))
+
+    fireEvent.press(screen.getByTestId('create-psr'))
+
+    await waitFor(() => {
+      expect(screen.getByTestId('input-Fecha fin de uso').props.errorMessage)
+        .toBe('La fecha de fin debe ser igual o posterior a la fecha de inicio')
+    })
+    expect(mockPost).not.toHaveBeenCalled()
   })
 
   it('muestra el PSR como solo lectura y guarda una OSR relacionada', async () => {

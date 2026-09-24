@@ -1,5 +1,18 @@
 export const VERSION_HISTORY = [
   {
+    version: '1.14.2',
+    fecha: '2026-09-24',
+    titulo: 'Fix: fechas con offset en PSR/averías (error 400) y validación de fechas a nivel día',
+    cambios: [
+      'Backend: deserializadores lenientes LocalDateTime/OffsetDateTime (acepta offset -05:00, Z y date-only)',
+      'Backend: JacksonDateCustomizer registra el módulo leniente después de JavaTimeModule',
+      'Mobile: isDateBefore valida fechas PSR a nivel día (evita falso positivo por horas)',
+      'Web: PsrOsr.jsx prellena inputs type=date (slice 10) y todayStr usa fecha local (UTC-antes)',
+      'Web: Averias.jsx prellena datetime-local con slice 16 al editar',
+      'Tests: +12 backend lenient, +4 mobile; fix EquipoResourceTest y AveriaServiceTest preexistentes',
+    ],
+  },
+  {
     version: '1.14.1',
     fecha: '2026-09-22',
     titulo: 'Fix: reconfiguración de puertos y patrón de URL mobile',

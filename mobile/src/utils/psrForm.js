@@ -87,6 +87,11 @@ export function isValidApiDate(dateStr) {
     && parsed.getDate() === day
 }
 
+export function isDateBefore(candidate, reference) {
+  if (!isValidApiDate(candidate) || !isValidApiDate(reference)) return false
+  return toDateOnly(candidate) < toDateOnly(reference)
+}
+
 export function calcularMeses(inicio, fin) {
   const inicioDate = toDateOnly(inicio)
   const finDate = toDateOnly(fin)

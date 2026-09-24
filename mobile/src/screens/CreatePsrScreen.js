@@ -24,6 +24,7 @@ import {
   formatApiDate,
   formatDisplayDate,
   getActiveCampanaId,
+  isDateBefore,
   isValidApiDate,
   parseApiDate,
 } from '../utils/psrForm'
@@ -94,9 +95,7 @@ const schema = z.object({
   fechaFinUso: requiredDate('Seleccione la fecha de fin'),
   observaciones: z.string().optional(),
 }).superRefine((data, context) => {
-  if (isValidApiDate(data.fechaInicioUso)
-    && isValidApiDate(data.fechaFinUso)
-    && data.fechaFinUso < data.fechaInicioUso) {
+  if (isDateBefore(data.fechaFinUso, data.fechaInicioUso)) {
     context.addIssue({
       code: z.ZodIssueCode.custom,
       path: ['fechaFinUso'],

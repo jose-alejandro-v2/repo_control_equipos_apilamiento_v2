@@ -72,7 +72,23 @@ class AveriaServiceTest {
         assertNotNull(resultado);
         assertEquals(new BigDecimal("1234.5"), resultado.getHorometro());
         verify(repository).persist(any(Averia.class));
-        verify(notificacionPushService).notificarAveriaReportada(equipo, 1L);
+        verify(notificacionPushService, never()).notificarAveriaReportada(any(), any());
+    }
+
+    @Test
+    void confirmar_deberiaNotificarAveriaReportada() {
+        Averia entity = new Averia();
+        entity.setId(9L);
+        entity.setEquipoId(5L);
+        entity.setUsuarioCreacion(17L);
+        when(repository.findById(9L)).thenReturn(entity);
+        Equipo equipo = new Equipo();
+        when(equipoRepository.findById(5L)).thenReturn(equipo);
+
+        AveriaDTO resultado = service.confirmar(9L);
+
+        assertNotNull(resultado);
+        verify(notificacionPushService).notificarAveriaReportada(equipo, 17L);
     }
 
     @Test

@@ -1,4 +1,5 @@
 # Java / Maven
+target/
 classes/
 generated-sources/
 generated-test-sources/
